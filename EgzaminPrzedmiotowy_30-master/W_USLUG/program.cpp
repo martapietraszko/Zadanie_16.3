@@ -51,10 +51,15 @@ void Program::losujPytania(int blok, int num)
 
     // Pobranie pytań z bazy zgodnie z wylosowanymi indeksami:
     for(int pyt = 0; pyt < toLos; pyt++)
+    {
         m_WylosPyt[blok][pyt] = m_BazaPytan->getBlok(blok).at(numery[pyt]);
+        int id_pytania = m_WylosPyt[blok][pyt].getNumer();
+        m_historia.dodaj_wylosowane(blok, id_pytania);
+    }
 
     // Zlecenie wypisania pytań do warstwy prezentacji przy pomocy sygnału:
     emit wypisz(m_WylosPyt[blok], blok);
+
 
 }
 
@@ -78,7 +83,11 @@ void Program::odznaczPytania(QVector<int> pytDoOdznaczenia, int blok)
 
     // Eliminacja kolejnych pytań z wektora pytań (wektor pytań nie jest posortowany -  tak ma być)
     for(auto idx:pytDoOdznaczenia)
+    {
+        int id_usuwanego_pytania=m_WylosPyt[blok][idx].getNumer();
+        m_historia.odrzucenie(blok,id_usuwanego_pytania);
         m_WylosPyt[blok].erase(m_WylosPyt[blok].begin()+idx);
+    }
 
     // Ponowne zlecenie wyświetlenia pytań do warstwy prezentacji (tym razem po usunięciu niechcianych):
     emit wypisz(m_WylosPyt[blok], blok);
